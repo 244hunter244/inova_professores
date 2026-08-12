@@ -237,11 +237,8 @@ app.delete('/avisos/:id', async (req, res) => {
 // -------------------------------------------------------------
 // INICIALIZAÇÃO DO SERVIDOR
 // -------------------------------------------------------------
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', req.path === '/' ? 'login.html' : req.path));
-});
-
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
