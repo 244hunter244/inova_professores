@@ -20,16 +20,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 app.post('/cadastrar', async (req, res) => {
   const { nome_completo, materia, idade, rg, senha } = req.body;
 
-  // Validação dos campos obrigatórios
   if (!nome_completo || !materia || !idade || !rg || !senha) {
-    return res.status(400).json({ erro: 'Todos os campos são obrigatórios!' });
+    return res.status(400).json({ 
+      erro: 'Validação', 
+      detalhe: 'Preencha todos os campos do formulário!' 
+    });
   }
 
   try {
-    // Criptografa a senha antes de enviar para o banco
+    // Criptografa a senha antes de enviar ao banco
     const senhaHash = await bcrypt.hash(senha, 10);
 
-    // Insere no banco de dados Supabase
+    // Insere no Supabase
     const { data, error } = await supabase
       .from('professores')
       .insert([{ 
@@ -41,7 +43,9 @@ app.post('/cadastrar', async (req, res) => {
       }])
       .select();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     return res.status(201).json({ 
       mensagem: 'Professor cadastrado com sucesso!', 
@@ -49,32 +53,42 @@ app.post('/cadastrar', async (req, res) => {
     });
 
   } catch (error) {
-    // Exibe o erro real diretamente no terminal do VS Code para depuração
-    console.error('--- ERRO NO SUPABASE ---', error);
+    console.error('--- ERRO DETALHADO NO SUPABASE ---', error);
+
+    // Mapeamento de erros comuns
+    let mensagemEspecifica = error.message || 'Erro desconhecido no banco de dados';
+
+    if (error.code === '42703') {
+      mensagemEspecifica = 'A coluna "senha" não existe na sua tabela do Supabase.';
+    } else if (error.code === '23505') {
+      mensagemEspecifica = 'Este professor ou RG já está cadastrado no sistema.';
+    } else if (error.code === '22P02') {
+      mensagemEspecifica = 'O campo Idade deve conter apenas números inteiros válidos.';
+    }
 
     return res.status(500).json({ 
-      erro: 'Erro ao cadastrar professor', 
-      detalhe: error.message || error 
+      erro: 'Falha no cadastro', 
+      detalhe: mensagemEspecifica 
     });
   }
 });
 
 // -------------------------------------------------------------
-// ROTA 2: LOGIN DE PROFESSOR
+// ROTA 2: LOGIN DE PROFESSOR (Nome Completo + Senha)
 // -------------------------------------------------------------
 app.post('/login', async (req, res) => {
-  const { rg, senha } = req.body;
+  const { nome_completo, senha } = req.body;
 
-  if (!rg || !senha) {
-    return res.status(400).json({ erro: 'RG e senha são obrigatórios!' });
+  if (!nome_completo || !senha) {
+    return res.status(400).json({ erro: 'Nome completo e senha são obrigatórios!' });
   }
 
   try {
-    // Busca o professor pelo RG
+    // Busca o professor pelo Nome Completo
     const { data: professores, error } = await supabase
       .from('professores')
       .select('*')
-      .eq('rg', rg);
+      .eq('nome_completo', nome_completo);
 
     if (error || !professores || professores.length === 0) {
       return res.status(401).json({ erro: 'Professor não encontrado!' });
@@ -82,14 +96,14 @@ app.post('/login', async (req, res) => {
 
     const professor = professores[0];
 
-    // Compara a senha informada com a senha criptografada
+    // Compara a senha informada com a senha criptografada no banco
     const senhaValida = await bcrypt.compare(senha, professor.senha);
 
     if (!senhaValida) {
       return res.status(401).json({ erro: 'Senha incorreta!' });
     }
 
-    // Remove o hash da senha do objeto retornado por segurança
+    // Remove a hash da senha antes de retornar os dados
     delete professor.senha;
 
     return res.status(200).json({ 

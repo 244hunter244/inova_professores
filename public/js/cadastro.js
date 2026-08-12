@@ -2,8 +2,8 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
   e.preventDefault();
 
   const mensagemDiv = document.getElementById('mensagem');
+  mensagemDiv.style.display = 'none';
   
-  // Coleta os dados do formulário
   const dados = {
     nome_completo: document.getElementById('nome_completo').value,
     materia: document.getElementById('materia').value,
@@ -25,14 +25,20 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
 
     if (resposta.ok) {
       mensagemDiv.className = 'mensagem sucesso';
-      mensagemDiv.textContent = 'Professor cadastrado com sucesso!';
+      mensagemDiv.textContent = 'Professor cadastrado com sucesso! Redirecionando...';
       document.getElementById('formCadastro').reset();
+
+      // Aguarda 2 segundos e redireciona para a página de login
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
     } else {
       mensagemDiv.className = 'mensagem erro';
-      mensagemDiv.textContent = resultado.erro || 'Erro ao realizar cadastro.';
+      const detalheErro = resultado.detalhe ? `: ${resultado.detalhe}` : '';
+      mensagemDiv.textContent = `${resultado.erro}${detalheErro}`;
     }
   } catch (error) {
     mensagemDiv.className = 'mensagem erro';
-    mensagemDiv.textContent = 'Erro ao conectar com o servidor.';
+    mensagemDiv.textContent = 'Erro ao conectar com o servidor Node.js.';
   }
 });
