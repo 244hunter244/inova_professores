@@ -4,12 +4,25 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
+      "src": "/(cadastrar|login|horarios|avisos)(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/",
+      "status": 301,
+      "headers": { "Location": "/login.html" }
+    },
+    {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "/public/$1"
     }
   ]
 }
