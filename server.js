@@ -7,6 +7,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
 
 // Configure aqui com as credenciais do seu Supabase
 const SUPABASE_URL = 'https://wsfbsjddjpmcomlqhepr.supabase.co';
