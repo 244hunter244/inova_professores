@@ -215,6 +215,23 @@ app.delete('/horarios/:id', async (req, res) => {
     return res.status(500).json({ erro: 'Erro ao cancelar horário' });
   }
 });
+// Excluir um aviso do mural pelo ID
+app.delete('/avisos/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { error } = await supabase
+      .from('avisos')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return res.status(200).json({ mensagem: 'Aviso excluído com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao excluir aviso:', error);
+    return res.status(500).json({ erro: 'Erro ao excluir aviso do banco' });
+  }
+});
 
 // -------------------------------------------------------------
 // INICIALIZAÇÃO DO SERVIDOR

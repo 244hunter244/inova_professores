@@ -145,28 +145,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     await enviarAviso(mensagem, 'troca');
   }
 
-  // --- MÓDULO DE AVISOS ---
-  async function carregarAvisos() {
-    try {
-      const res = await fetch('http://localhost:3000/avisos');
-      const avisos = await res.json();
-      const container = document.getElementById('listaAvisos');
-      container.innerHTML = '';
+  // --- MÓDULO DE AVISOS ATUALIZADO ---
+async function carregarAvisos() {
+  try {
+    const res = await fetch('http://localhost:3000/avisos');
+    const avisos = await res.json();
+    const container = document.getElementById('listaAvisos');
+    container.innerHTML = '';
 
-      avisos.forEach(a => {
-        const div = document.createElement('div');
-        div.className = `item-aviso ${a.tipo === 'troca' ? 'aviso-troca' : ''}`;
-        div.innerHTML = `
+    avisos.forEach(a => {
+      const div = document.createElement('div');
+      const ehMeuAviso = a.professor_nome === professor.nome_completo;
+
+      div.className = `item-aviso ${a.tipo === 'troca' ? 'aviso-troca' : ''}`;
+      div.innerHTML = `
+        <div class="topo-item-aviso">
           <strong>${a.professor_nome}</strong>
-          <p>${a.mensagem}</p>
-          <small>${new Date(a.created_at).toLocaleDateString('pt-BR')} ${new Date(a.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</small>
-        `;
-        container.appendChild(div);
-      });
-    } catch (err) {
-      console.error('Erro ao carregar avisos:', err);
-    }
+          ${ehMeuAviso ? `<button class="btn-deletar-aviso" title="Apagar aviso">&times;</button>` : ''}
+        </div>
+        <p>${a.mensagem}</p>
+        <small>${new Date(a.created_at).toLocaleDateString('pt-BR')} ${new Date(a.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</small>
+      `;
+
+      // Se for o autor do aviso, adiciona a ação de excluir no botão "X"
+      if (ehMeuAviso) {
+        const btnDeletar = div.querySelector('.btn-deletar-aviso');
+        btnDeletar.onclick = () => excluirAviso(a.id);
+      }
+
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error('Erro ao carregar avisos:', err);
   }
+}
+
+// Função para apagar o aviso no banco
+async function excluirAviso(id) {
+  if (!confirm('Tem certeza que deseja apagar este aviso do mural?')) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/avisos/${id}`, {
+      method: 'DELETE'
+    });
+
+    if (res.ok) {
+      carregarAvisos(); // Recarrega o mural de avisos
+    } else {
+      alert('Não foi possível excluir o aviso.');
+    }
+  } catch (err) {
+    alert('Erro na conexão ao tentar excluir o aviso.');
+  }
+}
 
   async function enviarAviso(mensagem, tipo = 'geral') {
     try {
