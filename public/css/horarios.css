@@ -253,3 +253,27 @@ body {
   font-size: 10px;
   color: #94a3b8;
 }
+/* Cabeçalho do Card de Aviso */
+.topo-item-aviso {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Botão de Excluir (X) */
+.btn-deletar-aviso {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-deletar-aviso:hover {
+  background-color: #fee2e2;
+}
