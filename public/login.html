@@ -6,7 +6,6 @@
   <title>Inova Labs - Login do Professor</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Estilos específicos para a tela de Login */
     body {
       background-color: #f8fafc;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -61,7 +60,7 @@
       border-color: #007bff;
     }
 
-    /* Caixa de Alerta de Erro */
+    /* Caixa de Erro Dinâmica */
     .msg-erro {
       display: none;
       color: #ef4444;
@@ -143,7 +142,7 @@
       formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Oculta mensagem anterior
+        // Oculta e limpa mensagens anteriores
         msgErro.style.display = 'none';
         msgErro.textContent = '';
 
@@ -156,28 +155,32 @@
         }
 
         try {
-          // Usa rota relativa para funcionar localmente e na Vercel
+          // Requisição para rota relativa do backend
           const res = await fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome_completo, senha })
           });
 
-          const dados = await res.json();
+          // Valida se o conteúdo retornado é um JSON válido
+          const contentType = res.headers.get('content-type');
+          let dados = {};
+          if (contentType && contentType.includes('application/json')) {
+            dados = await res.json();
+          }
 
           if (!res.ok) {
-            // Exibe a mensagem de erro vinda do servidor backend (ex: "Senha incorreta!")
-            mostrarErro(dados.erro || dados.detalhe || 'Falha ao autenticar.');
+            mostrarErro(dados.erro || dados.detalhe || `Erro no servidor (${res.status})`);
             return;
           }
 
-          // Armazena os dados do professor logado e redireciona
+          // Salva os dados do professor e avança para a dashboard
           localStorage.setItem('professorLogado', JSON.stringify(dados.professor));
           window.location.href = 'dashboard.html';
 
         } catch (err) {
           console.error('Erro na requisição:', err);
-          mostrarErro('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
+          mostrarErro('Não foi possível conectar ao servidor. Tente novamente.');
         }
       });
 

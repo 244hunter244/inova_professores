@@ -2,7 +2,27 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/(cadastrar|login|horarios|avisos)(.*)",
+      "source": "/login",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/cadastrar",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/horarios",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/horarios/:path*",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/avisos",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/avisos/:path*",
       "destination": "/server.js"
     }
   ]
