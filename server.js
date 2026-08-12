@@ -9,8 +9,8 @@ app.use(cors());
 app.use(express.static('public'));
 
 // Configure aqui com as credenciais do seu Supabase
-const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
-const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://wsfbsjddjpmcomlqhepr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_TlOrAEtgQqn8HDWf88mkAA_TAmqNmtR';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // --- ROTA DE CADASTRO DE PROFESSOR ---
