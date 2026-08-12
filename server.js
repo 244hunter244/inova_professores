@@ -5,16 +5,17 @@ const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
-app.use(express.json());
-app.use(cors());
-app.use(express.static('public'));
-app.get('/', (req, res) => {
-  res.redirect('/login.html');
-});
 
-// Configure aqui com as credenciais do seu Supabase
-const SUPABASE_URL = 'https://wsfbsjddjpmcomlqhepr.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_TlOrAEtgQqn8HDWf88mkAA_TAmqNmtR';
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// Servir os arquivos da pasta public usando o caminho absoluto do servidor
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Credenciais do Supabase
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://wsfbsjddjpmcomlqhepr.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_TlOrAEtgQqn8HDWf88mkAA_TAmqNmtR';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
