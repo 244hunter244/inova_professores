@@ -3,31 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Inova</title>
+  <title>Inova Labs - Login do Professor</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Estilos específicos para a tela de Login */
+    body {
+      background-color: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .login-card {
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .login-card h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #0f172a;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    /* Caixa de Alerta de Erro */
+    .msg-erro {
+      display: none;
+      color: #ef4444;
+      background-color: #fee2e2;
+      border: 1px solid #fca5a5;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-login:hover {
+      background-color: #0056b3;
+    }
+
+    .rodape-login {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .rodape-login a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .rodape-login a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+
+  <div class="login-card">
     <h2>Login do Professor</h2>
+
+    <div id="msgErro" class="msg-erro"></div>
+
     <form id="formLogin">
-      <div class="input-group">
-        <label for="nome_completo">Nome Completo</label>
-        <input type="text" id="nome_completo" required placeholder="Digite seu nome completo">
+      <div class="form-group">
+        <label for="nomeCompleto">Nome Completo</label>
+        <input type="text" id="nomeCompleto" placeholder="Digite seu nome completo" required>
       </div>
 
-      <div class="input-group">
+      <div class="form-group">
         <label for="senha">Senha</label>
-        <input type="password" id="senha" required placeholder="Digite sua senha">
+        <input type="password" id="senha" placeholder="••••••••" required>
       </div>
 
-      <button type="submit">Entrar</button>
+      <button type="submit" class="btn-login">Entrar</button>
     </form>
 
-    <div id="mensagem" class="mensagem"></div>
-
-    <p class="link-rodape">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    <div class="rodape-login">
+      Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a>
+    </div>
   </div>
 
-  <script src="js/login.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const formLogin = document.getElementById('formLogin');
+      const msgErro = document.getElementById('msgErro');
+
+      formLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Oculta mensagem anterior
+        msgErro.style.display = 'none';
+        msgErro.textContent = '';
+
+        const nome_completo = document.getElementById('nomeCompleto').value.trim();
+        const senha = document.getElementById('senha').value.trim();
+
+        if (!nome_completo || !senha) {
+          mostrarErro('Preencha todos os campos!');
+          return;
+        }
+
+        try {
+          // Usa rota relativa para funcionar localmente e na Vercel
+          const res = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome_completo, senha })
+          });
+
+          const dados = await res.json();
+
+          if (!res.ok) {
+            // Exibe a mensagem de erro vinda do servidor backend (ex: "Senha incorreta!")
+            mostrarErro(dados.erro || dados.detalhe || 'Falha ao autenticar.');
+            return;
+          }
+
+          // Armazena os dados do professor logado e redireciona
+          localStorage.setItem('professorLogado', JSON.stringify(dados.professor));
+          window.location.href = 'dashboard.html';
+
+        } catch (err) {
+          console.error('Erro na requisição:', err);
+          mostrarErro('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
+        }
+      });
+
+      function mostrarErro(mensagem) {
+        msgErro.textContent = mensagem;
+        msgErro.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>

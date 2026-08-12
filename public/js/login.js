@@ -1,38 +1,56 @@
-document.getElementById('formLogin').addEventListener('submit', async (e) => {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const formLogin = document.getElementById('formLogin'); // ID do formulário
+  const msgErro = document.getElementById('msgErro');     // Elemento para exibir o erro
 
-  const mensagemDiv = document.getElementById('mensagem');
-  mensagemDiv.style.display = 'none';
+  if (formLogin) {
+    formLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-  const dados = {
-    nome_completo: document.getElementById('nome_completo').value,
-    senha: document.getElementById('senha').value
-  };
+      // Limpa mensagem anterior
+      if (msgErro) msgErro.textContent = '';
 
-  try {
-    const resposta = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados)
-    });
+      const nome_completo = document.getElementById('nomeCompleto').value.trim();
+      const senha = document.getElementById('senha').value.trim();
 
-    const resultado = await resposta.json();
+      if (!nome_completo || !senha) {
+        exibirMensagem('Preencha todos os campos!');
+        return;
+      }
 
-    if (resposta.ok) {
-      localStorage.setItem('professorLogado', JSON.stringify(resultado.professor));
-      
-      mensagemDiv.className = 'mensagem sucesso';
-      mensagemDiv.textContent = 'Login realizado! Entrando...';
+      try {
+        // Usamos rota relativa para funcionar localmente e na Vercel
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome_completo, senha })
+        });
 
-      setTimeout(() => {
+        const dados = await res.json();
+
+        if (!res.ok) {
+          // Exibe o erro retornado pelo backend (ex: "Senha incorreta!" ou "Professor não encontrado!")
+          exibirMensagem(dados.erro || dados.detalhe || 'Erro ao realizar login.');
+          return;
+        }
+
+        // Se o login deu certo, salva os dados e redireciona
+        localStorage.setItem('professorLogado', JSON.stringify(dados.professor));
         window.location.href = 'dashboard.html';
-      }, 1500);
+
+      } catch (err) {
+        console.error('Erro de conexão:', err);
+        // Exibe erro de conexão quando o backend não responde
+        exibirMensagem('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
+      }
+    });
+  }
+
+  function exibirMensagem(texto) {
+    if (msgErro) {
+      msgErro.textContent = texto;
+      msgErro.style.display = 'block';
     } else {
-      mensagemDiv.className = 'mensagem erro';
-      mensagemDiv.textContent = resultado.erro || 'Falha ao realizar login.';
+      alert(texto);
     }
-  } catch (error) {
-    mensagemDiv.className = 'mensagem erro';
-    mensagemDiv.textContent = 'Erro ao conectar com o servidor.';
   }
 });
