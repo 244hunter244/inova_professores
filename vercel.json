@@ -1,28 +1,9 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(cadastrar|login|horarios|avisos)(.*)",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/",
-      "status": 301,
-      "headers": { "Location": "/login.html" }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "source": "/(cadastrar|login|horarios|avisos)(.*)",
+      "destination": "/server.js"
     }
   ]
 }
