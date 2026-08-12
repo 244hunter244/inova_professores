@@ -55,7 +55,6 @@ app.post('/cadastrar', async (req, res) => {
   } catch (error) {
     console.error('--- ERRO DETALHADO NO SUPABASE ---', error);
 
-    // Mapeamento de erros comuns
     let mensagemEspecifica = error.message || 'Erro desconhecido no banco de dados';
 
     if (error.code === '42703') {
@@ -118,6 +117,98 @@ app.post('/login', async (req, res) => {
       erro: 'Erro ao realizar login', 
       detalhe: error.message || error 
     });
+  }
+});
+
+// -------------------------------------------------------------
+// ROTA 3: LISTAR HORÁRIOS DOS LABORATÓRIOS
+// -------------------------------------------------------------
+app.get('/horarios', async (req, res) => {
+  try {
+    // AQUI ESTÁ A MUDANÇA: 'horarios_laboratorio' em vez de 'horarios'
+    const { data, error } = await supabase
+      .from('horarios_laboratorio')
+      .select('*');
+
+    if (error) throw error;
+
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error('--- ERRO AO BUSCAR HORÁRIOS ---', error);
+
+    return res.status(500).json({ 
+      erro: 'Erro ao carregar os horários do banco de dados.',
+      detalhe: error.message || error
+    });
+  }
+});
+// -------------------------------------------------------------
+// ROTAS DE AVISOS E RECADOS
+// -------------------------------------------------------------
+app.get('/avisos', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('avisos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ erro: 'Erro ao buscar avisos' });
+  }
+});
+
+app.post('/avisos', async (req, res) => {
+  const { professor_nome, mensagem, tipo } = req.body;
+  try {
+    const { data, error } = await supabase
+      .from('avisos')
+      .insert([{ professor_nome, mensagem, tipo: tipo || 'geral' }])
+      .select();
+
+    if (error) throw error;
+    return res.status(201).json(data[0]);
+  } catch (error) {
+    return res.status(500).json({ erro: 'Erro ao publicar aviso' });
+  }
+});
+
+// -------------------------------------------------------------
+// ROTAS DE AGENDAMENTO E CANCELAMENTO DE HORÁRIOS
+// -------------------------------------------------------------
+
+// Reservar / Criar Horário
+app.post('/horarios/reservar', async (req, res) => {
+  const { dia_semana, horario, laboratorio, professor, materia, turma } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from('horarios_laboratorio')
+      .insert([{ dia_semana, horario, laboratorio, professor, materia, turma }])
+      .select();
+
+    if (error) throw error;
+    return res.status(201).json(data[0]);
+  } catch (error) {
+    return res.status(500).json({ erro: 'Erro ao reservar horário' });
+  }
+});
+
+// Cancelar / Deletar Horário do Banco
+app.delete('/horarios/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { error } = await supabase
+      .from('horarios_laboratorio')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return res.status(200).json({ mensagem: 'Horário cancelado com sucesso!' });
+  } catch (error) {
+    return res.status(500).json({ erro: 'Erro ao cancelar horário' });
   }
 });
 

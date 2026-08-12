@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inova Labs - Grade e Avisos</title>
+  
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/horarios.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <h1>Inova Labs</h1>
+    </div>
+    <div class="user-area">
+      <span>Logado como: <strong id="nomeProfessor">Professor</strong></span>
+      <a href="dashboard.html" class="btn-nav">&larr; Voltar à Visão Geral</a>
+      <button id="btnLogout" class="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <div class="layout-com-sidebar">
+    <main class="main-content">
+      <h2 class="titulo-pagina">Grade Horária dos Laboratórios</h2>
+      <div class="tabela-responsive">
+        <table class="tabela-horarios">
+          <thead>
+            <tr>
+              <th>Dia / Horário</th>
+              <th>06:50</th>
+              <th>07:40</th>
+              <th>08:30</th>
+              <th>09:30</th>
+              <th>10:20</th>
+              <th>11:10</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabela"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <aside class="sidebar-avisos">
+      <h3>📌 Painel de Avisos</h3>
+      <p class="sub-sidebar">Comunique falhas de equipamentos ou solicite trocas.</p>
+
+      <form id="formAviso" class="form-aviso">
+        <textarea id="textoAviso" placeholder="Ex: O computador 04 do Lab 01 está sem internet..." required rows="3"></textarea>
+        <button type="submit" class="btn-postar">Enviar Aviso</button>
+      </form>
+
+      <div class="lista-avisos" id="listaAvisos"></div>
+    </aside>
+  </div>
+
+  <script src="js/horarios.js"></script>
+</body>
+</html>

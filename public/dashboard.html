@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inova - Visão Geral</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <h1>Inova Labs</h1>
+    </div>
+    <div class="user-area">
+      <span>Bem-vindo(a), <strong id="nomeProfessor">Professor</strong>!</span>
+      <a href="horarios.html" class="btn-nav">Acessar Laboratórios &rarr;</a>
+      <button id="btnLogout" class="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <section class="hero-section">
+      <h2>Sistema de Gestão e Reserva de Laboratórios</h2>
+      <p class="descricao">
+        Plataforma desenvolvida para organizar e facilitar o uso dos laboratórios de informática e ciências da escola.
+      </p>
+    </section>
+
+    <section class="cards-grid">
+      <div class="card-info">
+        <div class="icon">📅</div>
+        <h3>Grelha de Horários</h3>
+        <p>Acesse o mapa semanal com os dias e horários para visualizar de forma clara quais laboratórios estão ocupados e quais estão livres.</p>
+      </div>
+
+      <div class="card-info">
+        <div class="icon">👤</div>
+        <h3>Ocupação em Tempo Real</h3>
+        <p>Saiba exatamente qual professor realizou a reserva de cada aula, facilitando a comunicação entre a equipe docente.</p>
+      </div>
+
+      <div class="card-info">
+        <div class="icon">🔄</div>
+        <h3>Reservas e Trocas</h3>
+        <p>Reserve horários vagos com apenas um clique ou envie solicitações de troca de horário diretamente para os colegas de disciplina.</p>
+      </div>
+    </section>
+
+    <section class="call-to-action">
+      <p>Pronto para conferir a disponibilidade dos laboratórios?</p>
+      <a href="horarios.html" class="btn-primary-lg">Ir para a Tabela de Agendamentos</a>
+    </section>
+  </main>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

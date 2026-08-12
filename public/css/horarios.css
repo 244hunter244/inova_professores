@@ -1,0 +1,255 @@
+/* Layout Geral com Sidebar */
+body {
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.layout-com-sidebar {
+  display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.main-content {
+  flex: 1;
+  overflow-x: auto;
+}
+
+.titulo-pagina {
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+/* Tabela de Horários */
+.tabela-horarios {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tabela-horarios th {
+  background-color: #0284c7;
+  color: #ffffff;
+  padding: 12px;
+  font-size: 15px;
+  text-align: center;
+  border: 1px solid #0369a1;
+}
+
+.tabela-horarios td {
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  vertical-align: top;
+}
+
+.col-dia {
+  background-color: #f8fafc;
+  font-weight: bold;
+  font-size: 18px;
+  color: #1e293b;
+  text-align: center;
+  vertical-align: middle !important;
+  width: 120px;
+}
+
+.celula-horario {
+  width: 180px;
+  background-color: #ffffff;
+}
+
+/* Cards de Laboratório */
+.card-agendamento {
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.card-agendamento:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-agendamento.vago {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  text-align: center;
+}
+
+.meu-card {
+  border: 1px solid #3b82f6;
+}
+
+.text-vago {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.sub-vago {
+  font-size: 11px;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.prof-nome {
+  font-weight: bold;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.turma-materia {
+  font-size: 12px;
+  color: #334155;
+}
+
+.acao-card {
+  font-size: 10px;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.meu-card .acao-card { color: #ef4444; }
+.outro-card .acao-card { color: #f59e0b; }
+
+/* Tags dos Laboratórios */
+.tag-lab {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+
+.lab-01 {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.lab-02 {
+  background-color: #cff4fc;
+  color: #087990;
+}
+
+.lab-03 {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.tag-lotado {
+  background-color: #ffe4e6;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Sidebar de Avisos */
+.sidebar-avisos {
+  width: 320px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+
+.sidebar-avisos h3 {
+  margin: 0 0 5px 0;
+  color: #1e293b;
+  font-size: 18px;
+}
+
+.sub-sidebar {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 15px;
+}
+
+.form-aviso textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  resize: none;
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.btn-postar {
+  width: 100%;
+  margin-top: 8px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-postar:hover {
+  background-color: #2563eb;
+}
+
+.lista-avisos {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.item-aviso {
+  background-color: #f8fafc;
+  border-left: 4px solid #3b82f6;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.item-aviso.aviso-troca {
+  border-left-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+.item-aviso strong {
+  display: block;
+  font-size: 12px;
+  color: #1e293b;
+}
+
+.item-aviso p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #334155;
+}
+
+.item-aviso small {
+  font-size: 10px;
+  color: #94a3b8;
+}
