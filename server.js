@@ -215,7 +215,11 @@ app.delete('/horarios/:id', async (req, res) => {
 // -------------------------------------------------------------
 // INICIALIZAÇÃO DO SERVIDOR
 // -------------------------------------------------------------
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+
+// Exporta o app para a Vercel
+module.exports = app;
