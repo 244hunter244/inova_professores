@@ -1,44 +1,53 @@
-document.getElementById('formCadastro').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
+document.addEventListener('DOMContentLoaded', () => {
+  const formCadastro = document.getElementById('formCadastro');
   const mensagemDiv = document.getElementById('mensagem');
-  mensagemDiv.style.display = 'none';
-  
-  const dados = {
-    nome_completo: document.getElementById('nome_completo').value,
-    materia: document.getElementById('materia').value,
-    idade: document.getElementById('idade').value,
-    rg: document.getElementById('rg').value,
-    senha: document.getElementById('senha').value
-  };
 
-  try {
-    const resposta = await fetch('http://localhost:3000/cadastrar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dados)
+  if (formCadastro) {
+    formCadastro.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nome_completo = document.getElementById('nome_completo').value.trim();
+      const materia = document.getElementById('materia').value.trim();
+      const idade = document.getElementById('idade').value.trim();
+      const rg = document.getElementById('rg').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      const payload = {
+        nome_completo,
+        materia,
+        idade,
+        rg,
+        senha
+      };
+
+      try {
+        // Alterado de 'http://localhost:3000/cadastrar' para '/cadastrar'
+        const response = await fetch('/cadastrar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          mensagemDiv.className = 'mensagem sucesso';
+          mensagemDiv.textContent = 'Cadastro realizado com sucesso! Redirecionando...';
+          
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          mensagemDiv.className = 'mensagem erro';
+          mensagemDiv.textContent = data.error || 'Erro ao realizar cadastro.';
+        }
+      } catch (err) {
+        console.error('Erro na requisição de cadastro:', err);
+        mensagemDiv.className = 'mensagem erro';
+        mensagemDiv.textContent = 'Falha ao conectar com o servidor.';
+      }
     });
-
-    const resultado = await resposta.json();
-
-    if (resposta.ok) {
-      mensagemDiv.className = 'mensagem sucesso';
-      mensagemDiv.textContent = 'Professor cadastrado com sucesso! Redirecionando...';
-      document.getElementById('formCadastro').reset();
-
-      // Aguarda 2 segundos e redireciona para a página de login
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2000);
-    } else {
-      mensagemDiv.className = 'mensagem erro';
-      const detalheErro = resultado.detalhe ? `: ${resultado.detalhe}` : '';
-      mensagemDiv.textContent = `${resultado.erro}${detalheErro}`;
-    }
-  } catch (error) {
-    mensagemDiv.className = 'mensagem erro';
-    mensagemDiv.textContent = 'Erro ao conectar com o servidor Node.js.';
   }
 });
